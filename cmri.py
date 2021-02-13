@@ -29,8 +29,6 @@ class CMRI:
     def close_port(self):
         self.serialPort.close()
 
-cmri = None
-
 
 def handler(signal_received, frame):
     print(f'\nSignal {signal_received} caught.')

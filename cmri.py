@@ -33,7 +33,7 @@ cmri = None
 
 
 def handler(signal_received, frame):
-    print(signal_received, " caught, exiting")
+    print(f'\nSignal {signal_received} caught.')
     cmri.close_port()
     print("CRMI Exiting")
     exit(0)
@@ -57,7 +57,6 @@ def write_railroad(cmri):
 
 def main():
     print("CMRI Starting")
-    cmri = CMRI()
     cmri.initialize_port("/dev/ttyUSB0", 5760, 50)
     init_railroad(cmri)
     signal(SIGINT, handler)
@@ -69,4 +68,5 @@ def main():
 
 
 if __name__ == "__main__":
+    cmri = CMRI()
     main()

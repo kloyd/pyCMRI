@@ -5,6 +5,7 @@ from signal import signal, SIGINT
 from sys import exit
 import time
 
+
 class CMRI:
 
     def __init__(self):
@@ -28,31 +29,44 @@ class CMRI:
     def close_port(self):
         self.serialPort.close()
 
+cmri = None
+
+
 def handler(signal_received, frame):
-    print("SIGINT caught, exiting")
+    print(signal_received, " caught, exiting")
     cmri.close_port()
+    print("CRMI Exiting")
     exit(0)
-    
+
+
 def init_railroad(cmri):
     print("Initialize Railroad")
+
 
 def read_railroad(cmri):
     print("Read Railroad")
 
+
 def signal_logic(cmri):
-        print("Signal Logic")
-        
-print("CMRI Starting")
-cmri = CMRI()
+    print("Signal Logic")
 
-cmri.initialize_port("/dev/ttyUSB0", 5760, 50)
-init_railroad(cmri)
-signal(SIGINT, handler)
 
-while True:
-    read_railroad(cmri)
-    time.sleep(10)
+def write_railroad(cmri):
+    print("Write Railroad")
 
-cmri.close_port()
 
-print("CRMI Exiting")
+def main():
+    print("CMRI Starting")
+    cmri = CMRI()
+    cmri.initialize_port("/dev/ttyUSB0", 5760, 50)
+    init_railroad(cmri)
+    signal(SIGINT, handler)
+    while True:
+        read_railroad(cmri)
+        signal_logic(cmri)
+        write_railroad(cmri)
+        time.sleep(10)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,5 +1,9 @@
 # Use PYSerial
 import serial
+# Signals for interrupt
+from signal import signal, SIGINT
+from sys import exit
+import time
 
 class CMRI:
 
@@ -24,19 +28,30 @@ class CMRI:
     def close_port(self):
         self.serialPort.close()
 
-
+def handler(signal_received, frame):
+    print("SIGINT caught, exiting")
+    cmri.close_port()
+    exit(0)
+    
 def init_railroad(cmri):
     print("Initialize Railroad")
 
 def read_railroad(cmri):
-        print("Read Railroad")
+    print("Read Railroad")
 
+def signal_logic(cmri):
+        print("Signal Logic")
+        
 print("CMRI Starting")
 cmri = CMRI()
 
 cmri.initialize_port("/dev/ttyUSB0", 5760, 50)
 init_railroad(cmri)
-read_railroad(cmri)
+signal(SIGINT, handler)
+
+while True:
+    read_railroad(cmri)
+    time.sleep(10)
 
 cmri.close_port()
 

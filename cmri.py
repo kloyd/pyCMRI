@@ -29,6 +29,19 @@ class CMRI:
     def close_port(self):
         self.serialPort.close()
 
+    def init_node(self, UA, DL, number_dp, num_out_bytes, max_tries, num_in_bytes, num_two_lead_sigs, ct):
+        # Initialize a CMRI Node
+        # node_address - node number assigned on dip switches
+        # delay, number_dp
+        # CT is the array for config ports_
+        #      UA       = USIC address (range 0 to 127) unless using...
+        # DL       = USIC transmission delay
+        # strNDP     = Node definition parameter = "M", "N" or "X"
+        # iNumOutputBytes = number of output bytes in the buffer
+        # iNumInputBytes = number of input bytes in the buffer
+        # MAXTRIES = Maximum number of PC tries to read input bytes prior to PC aborting inputs
+        pass
+
 
 def handler(signal_received, frame):
     print(f'\nSignal {signal_received} caught.')

@@ -31,7 +31,7 @@ class CMRI:
 
 
 def handler(signal_received, frame):
-    print(f'\nSignal {signal_received} caught.')
+    print('\nSignal {signal_received} caught.')
     cmri.close_port()
     print("CRMI Exiting")
     exit(0)

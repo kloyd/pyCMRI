@@ -449,7 +449,7 @@ SUB INITRR
    UA = 16          'USIC NODE ADDRESS
    NDP$ = "X"       'NODE DEFINITION PARAMETER SUSIC
    NS = 2           'NUMBER OF CARD SETS OF 4
-   CT(1) = 153      'CARD SET IS IOIO
+   CT(1) = 90      'CARD SET IS OOII 5A or %b01011010
    CT(2) = 153      'CARD SET IS IOIO
    NI = 16          'NUMBER OF INPUT PORTS
    NO = 16          'NUMBER OF OUTPUT PORTS
@@ -465,59 +465,6 @@ REM INITALIZE SMINI #1  Walton
    ' line above for search light signal definitions
    CALL INIT        'INVOKE INITIALIZATION SUBROUTINE FOR SMINI
 
-
-# main loop
-DO
-LOOP WHILE INKEY$ = ""
-
-
-' Get Fast Clock Start Time and Ratio
-Filenum% = FREEFILE
-File$ = "FASTCLK.DAT"
-OPEN File$ FOR INPUT AS FREEFILE
-INPUT #Filenum%, Ratio, Hours, Mins
-CLOSE #Filenum%
-
-265
-CALL HEADER
-LOCATE 17, 52: PRINT "START "; : PRINT USING "##"; Hours; : PRINT ":"; : PRINT USING "##"; Mins;
-LOCATE 17, 69: PRINT "RATIO "; : PRINT USING "#"; Ratio; : PRINT ":1"
-
-LOCATE 11, 37: PRINT "MENUE"
-LOCATE 13, 30: PRINT "1) Speed Match Locos"
-LOCATE 14, 30: PRINT "2) Test Outputs"
-LOCATE 15, 30: PRINT "3) Test SMINI boards"
-LOCATE 16, 30: PRINT "4) Test Signals "
-LOCATE 17, 30: PRINT "5) Set Fast Clock"
-LOCATE 18, 30: PRINT "9) Start C/MRI"
-LOCATE 19, 30: PRINT "0) QUIT"
-
-270 Inpt$ = INKEY$
-
-Inpt$ = UCASE$(Inpt$)
-IF Inpt$ = "1" THEN CALL SPEEDTEST
-IF Inpt$ = "2" THEN CALL TESTOUTPUTS
-IF Inpt$ = "3" THEN CALL SMINItest
-IF Inpt$ = "4" THEN CALL TestSignals
-IF Inpt$ = "5" THEN CALL FastClk
-IF Inpt$ = "9" THEN GOTO 348
-IF Inpt$ = "0" THEN CLS : END
-
-
-IF Inpt$ = "" GOTO 270
-
-GOTO 265
-PLAY "MB O3 L16 A D": LOCATE 16, 45: PRINT "Not Implemented Yet"
-
-348 LOCATE 19, 25: PRINT "Display Status? (Y), Display I/O? (I), Test? (T)       ";
-350 Inpt$ = INKEY$
-IF Inpt$ = "" GOTO 350
-Diagnose$ = UCASE$(Inpt$)
-
-    LOCATE 20, 25: PRINT "Signals approach lit (Y/N)?                      ";
-351 Inpt$ = INKEY$
-IF Inpt$ = "" GOTO 351
-Signal$ = UCASE$(Inpt$)
 
 END SUB
 

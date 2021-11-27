@@ -47,6 +47,44 @@ class CMRI:
         # ns = number of 4 card sets or number of searchlights
         # MAXTRIES = Maximum number of PC tries to read input bytes prior to PC aborting inputs
         pass
+        MT = ord('I')  # ASC("I")               'Define message type = "I" (decimal 73)
+        self.out_byte[1] = ord(node_type)     #ASC(NDP$)           #Define node definition parameter
+        self.out_byte[2] = INT(DL / 256)       #Set USIC delay high-order byte
+        self.out_byte[3] = dl - (OB(2) * 256)  #Set USIC delay low-order byte
+        self.out_byte[4] = ns                  #Define number of card sets of 4 for...
+                                 #USIC and SUSIC cases and the...
+                                 #...number of 2-lead yellow aspect...
+                                 #...oscillating signals for the SMINI.
+        lm = 4  #Initialize length of message to start of loading CT elements
+
+  #**CHECK TYPE OF NODE TO CONTINUE SPECIFIC INITIALIZATION
+     IF NDP$ = "M" THEN GOTO INITSMINI  #SMINI node so branch accordingly
+
+INITUSIC:
+  #**SUSIC-NODE (either "N" or "X") SO LOAD CT( ) ARRAY ELEMENTS
+     FOR I = 1 TO NS     #Loop through number of card sets...
+        LM = LM + 1      #...accumulating message length while...
+        OB(LM) = CT(I)   #...loading card type definition CT...
+     NEXT I              #...array elements into output byte array
+     GOTO TXMSG  #CT( )s complete so branch to transmit initialization...
+                 #...message to interface
+INITSMINI:
+  #**SMINI-NODE ("M") SO CHECK IF REQUIRES 2-LEAD OSCILLATION...
+                   #...SEARCHLIGHT SIGNALS
+     IF NS = 0 THEN GOTO TXMSG #No signals so hold message length at...
+                               #...LM = 4 and branch to transmit packet
+
+  #**SMINI CASE WITH SIGNALS (NS > 0) SO LOOP THROUGH TO LOAD...
+     FOR I = 1 TO 6       #...signal location CT array elements...
+        LM = LM + 1       #...into output byte array while...
+        OB(LM) = CT(I)    #...accumulating message length
+     NEXT I
+
+  #**FORM INITIALIZATION PACKET AND TRANSMIT TO INTERFACE
+TXMSG: CALL TXPACK      #Invoke transmit packet subroutine
+
+#**COMPLETED USE OF OUTPUT BYTE ARRAY SO CLEAR IT BEFORE EXIT SUBROUTINE
+     FOR I = 1 TO NO: OB(I) = 0: NEXT I
 
     def txpack(self):
         """

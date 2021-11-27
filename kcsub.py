@@ -13,6 +13,11 @@ def handler(signal_received, frame):
 
 def init_railroad(cmri):
     print("Initialize Railroad")
+    # def init_node(self, ua, dl, node_type, ns, num_out_bytes, num_in_bytes, max_tries, ct):
+    # SUSIC cards = OOII = 90 = 5A = 01 01 10 10
+    ct = [90]
+    cmri.init_node(0, 100, "X", 1, 8, 8, 5, ct)
+
 
 
 def read_railroad(cmri):

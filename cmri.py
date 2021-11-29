@@ -34,7 +34,7 @@ class CMRI:
     def close_port(self):
         self.serialPort.close()
 
-    def init_node(self, ua, dl, node_type, ns, num_out_bytes, num_in_bytes, max_tries, ct):
+    def init_node(self, node_number, dl, node_type, ns, num_out_bytes, num_in_bytes, max_tries, ct):
         # Initialize a CMRI Node
         # node_address - node number assigned on dip switches
         # delay, number_dp
@@ -82,7 +82,7 @@ class CMRI:
                 self.out_byte[lm] = ct[i]
 
         #
-        self.txpack(node_number=ua, message_type=message_type, message_length=lm)
+        self.txpack(node_number, message_type, message_length=lm)
         # clean up output bytes
         #**COMPLETED USE OF OUTPUT BYTE ARRAY SO CLEAR IT BEFORE EXIT SUBROUTINE
         for i in range(1, num_out_bytes + 1):

@@ -47,18 +47,16 @@ class CMRI:
         # ns = number of 4 card sets or number of searchlights
         # MAXTRIES = Maximum number of PC tries to read input bytes prior to PC aborting inputs
         # pass
-        message_type = ord('I')  # ASC("I")               'Define message type = "I" (decimal 73)
-        self.out_byte[1] = ord(node_type)     #ASC(NDP$)           #Define node definition parameter
-        self.out_byte[2] = int(dl / 256)       #Set USIC delay high-order byte
-        self.out_byte[3] = dl % 256            #Set USIC delay low-order byte
-        self.out_byte[4] = ns                  #Define number of card sets of 4 for...
-                                 #USIC and SUSIC cases and the...
-                                 #...number of 2-lead yellow aspect...
-                                 #...oscillating signals for the SMINI.
+        message_type = ord('I')             # Define message type = "I" (decimal 73)
+        self.out_byte[1] = ord(node_type)   # Define node definition parameter
+        self.out_byte[2] = int(dl / 256)    # Set USIC delay high-order byte
+        self.out_byte[3] = dl % 256         # Set USIC delay low-order byte
+        self.out_byte[4] = ns               #D efine number of card sets of 4 for USIC and SUSIC cases 
+                                            # Or number of 2-lead yellow aspect oscillating signals for SMINI.
+
         lm = 4  #Initialize length of message to start of loading CT elements
 
-        #**CHECK TYPE OF NODE TO CONTINUE SPECIFIC INITIALIZATION
-        #IF NDP$ = "M" THEN GOTO INITSMINI  #SMINI node so branch accordingly
+        # M == SMINI node. X = SUSIC node.
         if node_type == "M":
             # init SMINI - only send CT if NS > 0
             # Always 6 configuration bytes in CT for SMINI

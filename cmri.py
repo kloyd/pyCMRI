@@ -109,7 +109,7 @@ class CMRI:
         self.tx_byte[3] = node_number + 65  #Add 65 offset to NODE address
         self.tx_byte[4] = message_type      #Define message type
         tp = 5                   #Define next position for transmit pointer
-        if self.mt != 80:
+        if message_type != 80:
             #goto ENDMSG   #Poll request so branch to end message
             i = 1
             while i <= message_length:

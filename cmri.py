@@ -16,12 +16,14 @@ class CMRI:
         #DIM SHARED OB(60), IB(60), CT(15), TB(80), CLOR(170)
         self.out_byte = []
         self.in_byte = []
+        self.tx_byte = []
         for n in range(0, 60):
             self.out_byte.append(0)
         for n in range(0, 60):
             self.in_byte.append(0)
         ct = [n for n in range(15)]
-        tx_byte = [n for n in range(80)]
+        for n in range(0, 80):
+            self.tx_byte.append(0)
         lm = 0 # length of message
 
     
@@ -123,5 +125,6 @@ class CMRI:
         self.tx_byte[tp] = 3 # (TP) = 3  'Add end-of-text (ETX = 3)
 
         # self.serialPort.write(self.tx_byte)
+        print(self.tx_byte)
 
   #REM**TRANSMIT PACKET TO USIC, SUSIC OR SMINI

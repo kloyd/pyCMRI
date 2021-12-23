@@ -111,10 +111,10 @@ class CMRI:
         tp = 5                   #Define next position for transmit pointer
         if message_type != 80:
             #goto ENDMSG   #Poll request so branch to end message
-            i = 1
+            i = 0
             while i <= message_length:
                 # escape control char by prefixing with 16
-                if self.out_byte[i] == 2 | self.out_byte == 3 | self.out_byte == 16:
+                if self.out_byte[i] == 2 | self.out_byte[i] == 3 | self.out_byte[i] == 16:
                     self.tx_byte[tp] = 16
                     tp = tp + 1
                 # add actual output byte

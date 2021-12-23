@@ -118,8 +118,9 @@ class CMRI:
                     self.tx_byte[tp] = 16
                     tp = tp + 1
                 # add actual output byte
-                self.tx_byte[tp] = self.out_byte[tp]
+                self.tx_byte[tp] = self.out_byte[i]
                 tp = tp + 1
+                i = i + 1
     
 
         self.tx_byte[tp] = 3 # (TP) = 3  'Add end-of-text (ETX = 3)

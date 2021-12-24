@@ -40,7 +40,11 @@ class CMRI:
     def close_port(self):
         self.serialPort.close()
 
-    def init_node(self, node_number, dl, node_type, ns, num_out_bytes, num_in_bytes, max_tries, ct):
+    def init_node(self, node_number, transmission_delay, node_type, num_signals_or_sets, num_out_bytes, num_in_bytes, max_tries, control_bytes):
+        '''
+        init_node - Initialize a CMRI Node
+
+        '''
         # Initialize a CMRI Node
         # node_address - node number assigned on dip switches
         # delay, number_dp
@@ -58,21 +62,16 @@ class CMRI:
         
         message_type = ord('I')             # Define message type = "I" (decimal 73)
         self.out_byte[0] = ord(node_type)   # Define node definition parameter
-        self.out_byte[1] = int(dl / 256)    # Set USIC delay high-order byte
-        self.out_byte[2] = dl % 256         # Set USIC delay low-order byte
-        self.out_byte[3] = ns               #D efine number of card sets of 4 for USIC and SUSIC cases 
+        self.out_byte[1] = int(transmission_delay / 256)    # Set USIC delay high-order byte
+        self.out_byte[2] = transmission_delay % 256         # Set USIC delay low-order byte
+        self.out_byte[3] = num_signals_or_sets               #D efine number of card sets of 4 for USIC and SUSIC cases 
                                             # Or number of 2-lead yellow aspect oscillating signals for SMINI.
 
-        lm = 3  #Initialize length of message to start of loading CT elements
+        message_start = 3  #Initialize length of message to start of loading CT elements
 
         # M == SMINI node. X = SUSIC node.
         if node_type == "M":
-            # init SMINI - only send CT if NS > 0
-            # Always 6 configuration bytes in CT for SMINI
-            if ns > 0:
-                for i in range(0, 6):
-                    lm = lm + 1
-                    self.out_byte[lm] = ct[i]
+            valid_init = self.init_smini(num_signals_or_sets, num_out_bytes, num_in_bytes, control_bytes, message_start)
         else:
             #init SUSIC
             # ns is number of 4 card sets in the IOMBX
@@ -84,16 +83,32 @@ class CMRI:
             #NEXT I              #...array elements into output byte array
             #GOTO TXMSG  #CT( )s complete so branch to transmit initialization...
                              #...message to interface
-            for i in range(0, ns):
-                lm = lm + 1
-                self.out_byte[lm] = ct[i]
+            for i in range(0, num_signals_or_sets):
+                message_start = message_start + 1
+                self.out_byte[message_start] = control_bytes[i]
 
         #
-        self.txpack(node_number, message_type, message_length=lm)
+        if valid_init:
+            self.txpack(node_number, message_type, message_length=message_start)
         # clean up output bytes
         #**COMPLETED USE OF OUTPUT BYTE ARRAY SO CLEAR IT BEFORE EXIT SUBROUTINE
         for i in range(0, num_out_bytes + 1):
             self.out_byte[i] = 0
+
+
+    def init_smini(self, num_signals_or_sets, num_out_bytes, num_in_bytes, control_bytes, lm):
+        # init SMINI - only send CT if NS > 0
+        # Perform CT validation and NO/NI validation.
+        if num_out_bytes != 6:
+            return False
+        if num_in_bytes != 3:
+            return False
+        # Always 6 configuration bytes in CT for SMINI
+        if num_signals_or_sets > 0:
+            for i in range(0, 6):
+                lm = lm + 1
+                self.out_byte[lm] = control_bytes[i]
+        return True
 
 
     def txpack(self, node_number, message_type, message_length):
